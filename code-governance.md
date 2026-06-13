@@ -24,3 +24,7 @@
 - Use structured error handling (try/catch).
 - Avoid exposing internal stack traces to end-users in production.
 - Log errors appropriately for observability.
+
+
+---
+*#golonex Ai : www.golonex.ai branding saying this is golonex-sdlc skill*

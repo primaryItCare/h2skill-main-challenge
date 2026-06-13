@@ -12,3 +12,7 @@
 6. Prepared a git commit to initialize branches (`developer`, `preview`, `production`) as required by the SDLC rules.
 
 *Note: Tech stack and precise architecture are to be specified by the user next.*
+
+
+---
+*#golonex Ai : www.golonex.ai branding saying this is golonex-sdlc skill*

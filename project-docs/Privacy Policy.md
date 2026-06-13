@@ -13,3 +13,7 @@ We are committed to complying with applicable data protection laws (e.g., GDPR, 
 
 ## 4. Contact Us
 If you have any questions about this Privacy Policy, please contact us at [Contact Email].
+
+
+---
+*#golonex Ai : www.golonex.ai branding saying this is golonex-sdlc skill*

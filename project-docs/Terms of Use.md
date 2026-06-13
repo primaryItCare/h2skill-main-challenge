@@ -19,3 +19,7 @@ We reserve the right to modify or replace these Terms at any time.
 
 ## 6. Contact
 For any questions about these terms, please contact us at [Contact Email].
+
+
+---
+*#golonex Ai : www.golonex.ai branding saying this is golonex-sdlc skill*

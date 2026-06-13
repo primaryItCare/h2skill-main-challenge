@@ -6,3 +6,7 @@
 4. **Peer Review:** Every PR requires at least one approval from a peer or a designated QA/Security subagent.
 5. **Security Scan:** Code must be analyzed for hardcoded secrets and common vulnerabilities.
 6. **Documentation:** Any new features must be accompanied by relevant updates to `/project-docs`.
+
+
+---
+*#golonex Ai : www.golonex.ai branding saying this is golonex-sdlc skill*
