@@ -17,6 +17,8 @@ function AuraCompanion() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://h2skillapi.golonex.ai";
+
   useEffect(() => {
     // Check for token in URL or LocalStorage
     const urlToken = searchParams.get("token");
@@ -55,7 +57,7 @@ function AuraCompanion() {
   const requestMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://h2skillapi.golonex.ai/api/auth/login", {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -106,7 +108,7 @@ function AuraCompanion() {
     setAiReply("Thinking...");
     
     try {
-      const res = await fetch("https://h2skillapi.golonex.ai/api/protected/chat", {
+      const res = await fetch(`${API_URL}/api/protected/chat`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
