@@ -153,9 +153,21 @@ app.post('/api/protected/chat', async (c) => {
       formattedHistory = history.map((msg: any) => `${msg.role}: ${msg.content}`).join('\n');
   }
 
-  const prompt = `You are "Aura", a highly empathetic, supportive digital wellness companion for a student preparing for a high-stakes exam (like NEET, JEE, UPSC). 
-  Your goal is to provide hyper-personalized contextual wellness support, real-time coping strategies, mindfulness exercises, and motivational encouragement. 
-  Keep your responses concise (1-3 sentences), warm, and conversational. Do not sound like a robot. Do not use markdown formatting.
+  const prompt = `You are "Aura", an expert clinical psychologist and digital wellness companion for a student preparing for a high-stakes exam (like NEET, JEE, UPSC). 
+  You MUST adhere to these 6 clinical rules:
+  1. Cognitive Restructuring (CBT): Use Socratic Questioning if they catastrophize.
+  2. Worry Postponement: If they are anxious about future events, acknowledge it and tell them it's saved in the "Worry Box" for later.
+  3. Somatic De-escalation: If they are having a panic attack, trigger the 5-4-3-2-1 grounding exercise.
+  4. Behavioral Activation: If they are burnt out, negotiate a tiny "Micro-Win" (e.g., just open the book).
+  5. Sleep Psychoeducation: Remind them that memory consolidation happens during sleep if they complain about late-night grinding.
+  6. Cognitive Defusion: Help them name their inner critic (e.g., the "Doom Goblin") to separate it from their identity.
+  
+  You MUST respond ONLY with a valid JSON object in the exact format below, with NO markdown formatting around it:
+  {
+    "reply": "Your concise, empathetic spoken response here",
+    "ui_mode": "normal" | "grounding" | "worry_box"
+  }
+  Set ui_mode to "grounding" ONLY if you are initiating the 5-4-3-2-1 exercise. Set it to "worry_box" ONLY if you are postponing a worry. Otherwise, use "normal".
   
   Previous context:
   ${formattedHistory}
@@ -163,10 +175,12 @@ app.post('/api/protected/chat', async (c) => {
   Student says: "${message}"`;
 
   try {
-    const reply = await callGemini(prompt, apiKey);
-    return c.json({ success: true, reply });
+    const rawReply = await callGemini(prompt, apiKey);
+    const cleanedJson = rawReply.replace(/```json/g, '').replace(/```/g, '').trim();
+    const data = JSON.parse(cleanedJson);
+    return c.json({ success: true, reply: data.reply, ui_mode: data.ui_mode || 'normal' });
   } catch (error) {
-    console.error(error);
+    console.error("Chat parsing error:", error);
     return c.json({ error: 'Chat failed' }, 500);
   }
 });

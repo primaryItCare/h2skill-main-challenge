@@ -70,7 +70,34 @@ body {
 .orb.calm {
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), var(--orb-calm));
   box-shadow: 0 0 80px var(--orb-calm);
-  animation: breathe 8s infinite ease-in-out; /* 4s in, 4s out breathing */
+  animation: grounding-breathe 10s infinite ease-in-out; /* 5s in, 5s out (5-4-3-2-1 rhythm) */
+}
+
+/* Worry Box Toast */
+.toast-worry {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(45, 212, 191, 0.2);
+  border: 1px solid var(--orb-calm);
+  padding: 12px 24px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+  animation: slideIn 0.5s ease-out forwards, fadeOut 0.5s ease-in forwards 3.5s;
+  pointer-events: none;
+  z-index: 50;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 /* Typography & Layout */
@@ -158,8 +185,8 @@ body {
   100% { transform: scale(1.15); opacity: 1; }
 }
 
-@keyframes breathe {
-  0% { transform: scale(0.9); }
-  50% { transform: scale(1.3); } /* Inhale */
-  100% { transform: scale(0.9); } /* Exhale */
+@keyframes grounding-breathe {
+  0% { transform: scale(0.85); }
+  50% { transform: scale(1.4); } /* Inhale deeply */
+  100% { transform: scale(0.85); } /* Exhale deeply */
 }

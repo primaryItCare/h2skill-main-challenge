@@ -8,6 +8,7 @@ function AuraCompanion() {
   const [transcript, setTranscript] = useState("Tap the orb and tell me what's on your mind...");
   const [aiReply, setAiReply] = useState("");
   const [isBreathing, setIsBreathing] = useState(false);
+  const [showWorryToast, setShowWorryToast] = useState(false);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [magicLinkSent, setMagicLinkSent] = useState(false);
@@ -126,8 +127,15 @@ function AuraCompanion() {
         setAiReply(data.reply);
         speakText(data.reply);
         
-        if (data.reply.toLowerCase().includes("breathe") || data.reply.toLowerCase().includes("stress")) {
+        // Reset states
+        setIsBreathing(false);
+        setShowWorryToast(false);
+
+        if (data.ui_mode === "grounding") {
           setIsBreathing(true);
+        } else if (data.ui_mode === "worry_box") {
+          setShowWorryToast(true);
+          setTimeout(() => setShowWorryToast(false), 4000); // hide after 4s
         }
       } else {
         setAiReply("I'm sorry, I couldn't process that right now.");
@@ -170,6 +178,13 @@ function AuraCompanion() {
   return (
     <>
       <div className="ambient-bg" />
+      
+      {showWorryToast && (
+        <div className="toast-worry">
+          📦 Worry saved to your Worry Box! We'll review it later.
+        </div>
+      )}
+
       <div className="ui-layer">
         <div className="header">
           <h1>Aura</h1>
