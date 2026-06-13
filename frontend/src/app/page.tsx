@@ -14,11 +14,9 @@ function AuraCompanion() {
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const recognitionRef = useRef<any>(null);
-  
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://h2skillapi.golonex.ai";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://student-wellness-backend.yash7118.workers.dev";
 
   useEffect(() => {
     // Check for token in URL or LocalStorage
