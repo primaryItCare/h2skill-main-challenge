@@ -12,8 +12,18 @@ type Bindings = {
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', cors({
-  origin: ['https://hack2skill.golonex.ai', 'http://localhost:3000'],
+  origin: (origin) => {
+    if (!origin) return 'https://hack2skill.golonex.ai';
+    if (origin.includes('localhost') || origin.includes('hack2skill.golonex.ai')) {
+      return origin;
+    }
+    return 'https://hack2skill.golonex.ai';
+  },
   allowMethods: ['POST', 'GET', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  exposeHeaders: ['Content-Type'],
+  maxAge: 600,
+  credentials: true,
 }));
 
 // Basic in-memory rate limiter (for hackathon/MVP)
