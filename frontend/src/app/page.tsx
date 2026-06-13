@@ -297,6 +297,21 @@ function AuraCompanion() {
       </div>
 
       <main className="main-content">
+        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 50 }}>
+          <button 
+            onClick={() => {
+              localStorage.removeItem("aura_token");
+              setAuthToken(null);
+              router.replace("/");
+            }}
+            className="btn"
+            style={{ padding: "8px 16px", background: "rgba(239, 68, 68, 0.2)", color: "#ef4444", border: "1px solid rgba(239, 68, 68, 0.5)", fontSize: "0.9rem" }}
+            aria-label="Securely Sign Out"
+          >
+            Sign Out
+          </button>
+        </div>
+
         <div className="branding" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
           <img src="/logo.png" alt="Aura Logo" style={{ width: "60px", height: "60px", borderRadius: "50%", boxShadow: "0 0 20px rgba(168, 85, 247, 0.2)" }} />
           <h1>Aura</h1>
