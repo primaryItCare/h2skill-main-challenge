@@ -41,8 +41,25 @@ async function getJsonBody(c: any) {
   }
 }
 
+// --- RATE LIMITING ---
+const ipLimitMap = new Map<string, number[]>();
+function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
+  const now = Date.now();
+  const requests = ipLimitMap.get(ip) || [];
+  const recent = requests.filter(t => now - t < windowMs);
+  if (recent.length >= limit) return false;
+  recent.push(now);
+  ipLimitMap.set(ip, recent);
+  return true;
+}
+
 // --- AUTHENTICATION ---
 app.post('/api/auth/login', async (c) => {
+  const ip = c.req.header('cf-connecting-ip') || 'unknown';
+  if (!checkRateLimit(ip, 5, 60000)) {
+    return c.json({ error: 'Too many requests. Please wait a minute.' }, 429);
+  }
+
   const body = await getJsonBody(c);
   if (!body) return c.json({ error: 'Invalid JSON payload' }, 400);
 
@@ -203,6 +220,11 @@ app.post('/api/protected/journal', async (c) => {
  * Enforces structured JSON outputs to manipulate frontend UI states (e.g., triggering Grounding animations).
  */
 app.post('/api/protected/chat', async (c) => {
+  const ip = c.req.header('cf-connecting-ip') || 'unknown';
+  if (!checkRateLimit(ip, 20, 60000)) {
+    return c.json({ error: 'Too many requests.' }, 429);
+  }
+
   const body = await getJsonBody(c);
   if (!body) return c.json({ error: 'Invalid JSON payload' }, 400);
 
