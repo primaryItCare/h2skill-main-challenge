@@ -54,7 +54,7 @@ function AuraCompanion() {
   const requestMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:8787/api/auth/login", {
+      const res = await fetch("https://h2skillapi.golonex.ai/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -105,7 +105,7 @@ function AuraCompanion() {
     setAiReply("Thinking...");
     
     try {
-      const res = await fetch("http://localhost:8787/api/protected/chat", {
+      const res = await fetch("https://h2skillapi.golonex.ai/api/protected/chat", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

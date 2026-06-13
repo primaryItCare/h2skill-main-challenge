@@ -25,7 +25,7 @@ app.post('/api/auth/login', async (c) => {
   };
   
   const token = await sign(payload, c.env.JWT_SECRET);
-  const magicLink = `http://localhost:3000/?token=${token}`;
+  const magicLink = `https://hack2skill.golonex.ai/?token=${token}`;
 
   // Send email via Resend
   const resendUrl = 'https://api.resend.com/emails';
