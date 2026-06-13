@@ -11,3 +11,7 @@ database_id = "aa3557ae-b1ac-4966-97e1-8de26b6cee93"
 [vars]
 # We will use the GEMINI_API_KEY environment variable. 
 # In production, this should be set via `wrangler secret put GEMINI_API_KEY`
+
+[[routes]]
+pattern = "h2skillapi.golonex.ai"
+custom_domain = true
