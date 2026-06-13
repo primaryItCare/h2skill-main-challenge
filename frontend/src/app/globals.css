@@ -251,3 +251,19 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.toast-error {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(239, 68, 68, 0.9); /* Red hue for error */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  z-index: 1000;
+  animation: slideUp 0.3s ease-out;
+  border: 1px solid rgba(255,255,255,0.2);
+}

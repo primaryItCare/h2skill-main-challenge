@@ -13,6 +13,7 @@ function AuraCompanion() {
   const [email, setEmail] = useState("");
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [toastError, setToastError] = useState("");
   const recognitionRef = useRef<any>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -63,7 +64,8 @@ function AuraCompanion() {
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        alert(errData.error || "Failed to send magic link. Please try again.");
+        setToastError(errData.error || "Failed to send magic link. Please try again.");
+        setTimeout(() => setToastError(""), 5000);
         return;
       }
       const data = await res.json();
@@ -175,8 +177,15 @@ function AuraCompanion() {
       <>
         <div className="ambient-bg" />
         
+        {toastError && (
+          <div className="toast-error">
+            ⚠️ {toastError}
+          </div>
+        )}
+
         {/* LANDING PAGE */}
         <div className="landing-hero">
+          <img src="/logo.png" alt="Aura Logo" style={{ width: "120px", height: "120px", marginBottom: "20px", borderRadius: "50%", boxShadow: "0 0 30px rgba(168, 85, 247, 0.4)" }} />
           <h1>Aura: Your Clinical AI Companion</h1>
           <p style={{ fontSize: "1.2rem", lineHeight: "1.6", color: "rgba(255,255,255,0.8)" }}>
             High-stakes exams like NEET, JEE, and UPSC demand more than just hard work—they demand immense psychological resilience.
@@ -238,6 +247,12 @@ function AuraCompanion() {
     <>
       <div className="ambient-bg" />
       
+      {toastError && (
+        <div className="toast-error">
+          ⚠️ {toastError}
+        </div>
+      )}
+
       {showWorryToast && (
         <div className="toast-worry">
           📦 Worry saved to your Worry Box! We'll review it later.
@@ -252,7 +267,8 @@ function AuraCompanion() {
       </div>
 
       <main className="main-content">
-        <div className="branding">
+        <div className="branding" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+          <img src="/logo.png" alt="Aura Logo" style={{ width: "60px", height: "60px", borderRadius: "50%", boxShadow: "0 0 20px rgba(168, 85, 247, 0.2)" }} />
           <h1>Aura</h1>
           <p>Your Academic Resilience Coach</p>
         </div>
