@@ -278,7 +278,7 @@ function AuraCompanion() {
             </button>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
