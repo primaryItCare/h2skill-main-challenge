@@ -19,6 +19,15 @@ app.use('*', cors({
 // Basic in-memory rate limiter (for hackathon/MVP)
 const rateLimitMap = new Map<string, number>();
 
+// Helper to safely parse JSON body
+async function getJsonBody(c: any) {
+  try {
+    return await c.req.json();
+  } catch (e) {
+    return null;
+  }
+}
+
 // --- AUTHENTICATION ---
 app.post('/api/auth/login', async (c) => {
   const ip = c.req.header('cf-connecting-ip') || 'unknown-ip';
@@ -29,8 +38,13 @@ app.post('/api/auth/login', async (c) => {
   }
   rateLimitMap.set(ip, now);
 
-  const { email } = await c.req.json();
-  if (!email) return c.json({ error: 'Email is required' }, 400);
+  const body = await getJsonBody(c);
+  if (!body) return c.json({ error: 'Invalid JSON payload' }, 400);
+
+  const { email } = body;
+  if (!email || typeof email !== 'string' || email.length > 255 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return c.json({ error: 'Valid email is required' }, 400);
+  }
 
   // Generate JWT token valid for 24 hours
   const payload = {
@@ -107,11 +121,17 @@ async function callGemini(prompt: string, apiKey: string) {
 
 // --- PROTECTED ROUTES ---
 app.post('/api/protected/journal', async (c) => {
-  const { entry } = await c.req.json();
+  const body = await getJsonBody(c);
+  if (!body) return c.json({ error: 'Invalid JSON payload' }, 400);
+
+  const { entry } = body;
   const user = c.get('user') as any; // from JWT middleware
   const apiKey = c.env.GEMINI_API_KEY;
 
-  if (!entry) return c.json({ error: 'Entry is required' }, 400);
+  if (!entry || typeof entry !== 'string' || entry.length > 5000) {
+    return c.json({ error: 'Valid entry is required (max 5000 chars)' }, 400);
+  }
+  const sanitizedEntry = entry.replace(/"/g, "'");
 
   const prompt = `Analyze the following journal entry from a student preparing for high-stakes exams.
   Extract the primary mood (e.g., Anxious, Stressed, Motivated, Tired) and rate the stress level from 1 to 10.
@@ -123,7 +143,7 @@ app.post('/api/protected/journal', async (c) => {
     "triggers": "string"
   }
   
-  Journal Entry: "${entry}"`;
+  Journal Entry: "${sanitizedEntry}"`;
 
   try {
     const analysisText = await callGemini(prompt, apiKey);
@@ -143,14 +163,25 @@ app.post('/api/protected/journal', async (c) => {
 });
 
 app.post('/api/protected/chat', async (c) => {
-  const { message, history } = await c.req.json();
+  const body = await getJsonBody(c);
+  if (!body) return c.json({ error: 'Invalid JSON payload' }, 400);
+
+  const { message, history } = body;
   const apiKey = c.env.GEMINI_API_KEY;
 
-  if (!message) return c.json({ error: 'Message is required' }, 400);
+  if (!message || typeof message !== 'string' || message.length > 2000) {
+    return c.json({ error: 'Valid message is required (max 2000 chars)' }, 400);
+  }
+  const sanitizedMessage = message.replace(/"/g, "'");
 
   let formattedHistory = '';
-  if (history && history.length > 0) {
-      formattedHistory = history.map((msg: any) => `${msg.role}: ${msg.content}`).join('\n');
+  if (Array.isArray(history)) {
+      formattedHistory = history.map((msg: any) => {
+          if (msg && typeof msg.role === 'string' && typeof msg.content === 'string') {
+              return `${msg.role.replace(/"/g, "'")}: ${msg.content.replace(/"/g, "'")}`;
+          }
+          return '';
+      }).filter(bool => bool).join('\n');
   }
 
   const prompt = `You are "Aura", an expert clinical psychologist and digital wellness companion for a student preparing for a high-stakes exam (like NEET, JEE, UPSC). 
@@ -172,7 +203,7 @@ app.post('/api/protected/chat', async (c) => {
   Previous context:
   ${formattedHistory}
   
-  Student says: "${message}"`;
+  Student says: "${sanitizedMessage}"`;
 
   try {
     const rawReply = await callGemini(prompt, apiKey);
