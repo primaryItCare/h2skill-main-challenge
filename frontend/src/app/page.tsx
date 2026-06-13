@@ -20,12 +20,32 @@ function AuraCompanion() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://h2skillapi.golonex.ai";
 
   useEffect(() => {
-    // Check for token in URL or LocalStorage
-    const urlToken = searchParams.get("token");
-    if (urlToken) {
-      localStorage.setItem("aura_token", urlToken);
-      setAuthToken(urlToken);
-      router.replace("/");
+    // Check for magic token in URL to exchange securely
+    const magicToken = searchParams.get("magic_token");
+    if (magicToken) {
+      // Exchange magic token for secure auth token
+      fetch(`${API_URL}/api/auth/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ magic_token: magicToken }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.token) {
+          localStorage.setItem("aura_token", data.token);
+          setAuthToken(data.token);
+          router.replace("/");
+        } else {
+          setToastError("Invalid or expired magic link.");
+          setTimeout(() => setToastError(""), 5000);
+          router.replace("/");
+        }
+      })
+      .catch(() => {
+        setToastError("Failed to verify magic link.");
+        setTimeout(() => setToastError(""), 5000);
+        router.replace("/");
+      });
     } else {
       const storedToken = localStorage.getItem("aura_token");
       if (storedToken) setAuthToken(storedToken);

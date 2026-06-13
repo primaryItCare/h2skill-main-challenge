@@ -59,14 +59,15 @@ app.post('/api/auth/login', async (c) => {
     return c.json({ error: 'Valid email is required' }, 400);
   }
 
-  // Generate JWT token valid for 24 hours
+  // Generate short-lived magic link token (valid for 15 minutes)
   const payload = {
     email: email,
-    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24 hours
+    type: 'magic',
+    exp: Math.floor(Date.now() / 1000) + 15 * 60, // 15 minutes
   };
   
   const token = await sign(payload, c.env.JWT_SECRET);
-  const magicLink = `https://hack2skill.golonex.ai/?token=${token}`;
+  const magicLink = `https://hack2skill.golonex.ai/?magic_token=${token}`;
 
   // Send email via Resend
   const resendUrl = 'https://api.resend.com/emails';
@@ -99,6 +100,29 @@ app.post('/api/auth/login', async (c) => {
   }
 });
 
+// --- MAGIC LINK EXCHANGE ---
+app.post('/api/auth/verify', async (c) => {
+  const body = await getJsonBody(c);
+  if (!body || !body.magic_token) return c.json({ error: 'Missing magic token' }, 400);
+  
+  try {
+    const decoded = await verify(body.magic_token, c.env.JWT_SECRET) as any;
+    if (decoded.type !== 'magic') return c.json({ error: 'Invalid token type' }, 401);
+    
+    // Generate actual long-lived auth token (24 hours)
+    const authPayload = {
+      email: decoded.email,
+      type: 'auth',
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+    };
+    const authToken = await sign(authPayload, c.env.JWT_SECRET);
+    
+    return c.json({ success: true, token: authToken });
+  } catch (err) {
+    return c.json({ error: 'Invalid or expired magic link' }, 401);
+  }
+});
+
 // Middleware to verify JWT for protected routes
 app.use('/api/protected/*', async (c, next) => {
   const authHeader = c.req.header('Authorization');
@@ -107,7 +131,8 @@ app.use('/api/protected/*', async (c, next) => {
   }
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = await verify(token, c.env.JWT_SECRET);
+    const decoded = await verify(token, c.env.JWT_SECRET) as any;
+    if (decoded.type !== 'auth') return c.json({ error: 'Invalid token type' }, 401);
     c.set('user', decoded);
     await next();
   } catch (err) {
