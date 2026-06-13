@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { secureHeaders } from 'hono/secure-headers';
 import { sign, verify } from 'hono/jwt';
 
 type Bindings = {
@@ -11,6 +12,7 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>();
 
+app.use('*', secureHeaders());
 app.use('*', cors({
   origin: (origin) => {
     if (!origin) return 'https://hack2skill.golonex.ai';
