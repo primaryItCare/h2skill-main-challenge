@@ -11,10 +11,24 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-app.use('*', cors());
+app.use('*', cors({
+  origin: ['https://hack2skill.golonex.ai', 'http://localhost:3000'],
+  allowMethods: ['POST', 'GET', 'OPTIONS'],
+}));
+
+// Basic in-memory rate limiter (for hackathon/MVP)
+const rateLimitMap = new Map<string, number>();
 
 // --- AUTHENTICATION ---
 app.post('/api/auth/login', async (c) => {
+  const ip = c.req.header('cf-connecting-ip') || 'unknown-ip';
+  const now = Date.now();
+  const lastRequest = rateLimitMap.get(ip);
+  if (lastRequest && now - lastRequest < 60000) { // 1 request per minute
+    return c.json({ error: 'Too many requests. Please wait a minute.' }, 429);
+  }
+  rateLimitMap.set(ip, now);
+
   const { email } = await c.req.json();
   if (!email) return c.json({ error: 'Email is required' }, 400);
 
@@ -92,6 +106,42 @@ async function callGemini(prompt: string, apiKey: string) {
 }
 
 // --- PROTECTED ROUTES ---
+app.post('/api/protected/journal', async (c) => {
+  const { entry } = await c.req.json();
+  const user = c.get('user') as any; // from JWT middleware
+  const apiKey = c.env.GEMINI_API_KEY;
+
+  if (!entry) return c.json({ error: 'Entry is required' }, 400);
+
+  const prompt = `Analyze the following journal entry from a student preparing for high-stakes exams.
+  Extract the primary mood (e.g., Anxious, Stressed, Motivated, Tired) and rate the stress level from 1 to 10.
+  Identify any hidden stress triggers.
+  Return ONLY a valid JSON object in this exact format:
+  {
+    "mood": "string",
+    "stress_level": number,
+    "triggers": "string"
+  }
+  
+  Journal Entry: "${entry}"`;
+
+  try {
+    const analysisText = await callGemini(prompt, apiKey);
+    const cleanedJson = analysisText.replace(/```json/g, '').replace(/```/g, '').trim();
+    const analysis = JSON.parse(cleanedJson);
+
+    // Save to DB using authenticated user's email securely to prevent IDOR
+    await c.env.DB.prepare(
+      'INSERT INTO journals (user_id, entry, mood, stress_level, triggers) VALUES (?, ?, ?, ?, ?)'
+    ).bind(user.email, entry, analysis.mood, analysis.stress_level, analysis.triggers).run();
+
+    return c.json({ success: true, analysis });
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: 'Analysis failed' }, 500);
+  }
+});
+
 app.post('/api/protected/chat', async (c) => {
   const { message, history } = await c.req.json();
   const apiKey = c.env.GEMINI_API_KEY;
