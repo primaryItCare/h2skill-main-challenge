@@ -216,28 +216,28 @@ function AuraCompanion() {
         {/* LANDING PAGE */}
         <div className="landing-hero">
           <img src="/logo.png" alt="Aura Logo" style={{ width: "120px", height: "120px", marginBottom: "20px", borderRadius: "50%", boxShadow: "0 0 30px rgba(168, 85, 247, 0.4)" }} />
-          <h1>Aura: Your Clinical AI Companion</h1>
+          <h1>Aura: Your Safe Space for Exam Prep</h1>
           <p style={{ fontSize: "1.2rem", lineHeight: "1.6", color: "rgba(255,255,255,0.8)" }}>
-            High-stakes exams like NEET, JEE, and UPSC demand more than just hard work—they demand immense psychological resilience.
-            Aura is a voice-first, generative AI wellness companion designed specifically for students facing burnout and stress.
+            Exams like NEET, JEE, and UPSC are tough, and they can take a real toll on your mental health.
+            When you're feeling burned out, anxious, or just need someone to vent to, Aura is here to listen and help you reset.
           </p>
           <button className="btn" style={{ marginTop: "30px", fontSize: "1.2rem" }} onClick={() => setShowLoginModal(true)}>
-            Get Started Frictionlessly
+            Start Chatting
           </button>
         </div>
 
         <div className="features-grid">
           <div className="feature-card">
-            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Cognitive Restructuring</h3>
-            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>Aura uses Socratic Questioning to help you overcome catastrophizing and self-doubt during exam prep.</p>
+            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Clear Your Head</h3>
+            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>Feeling overwhelmed or doubting yourself? Aura gently guides you through those spiraling thoughts so you can refocus on your prep.</p>
           </div>
           <div className="feature-card">
-            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Somatic Grounding</h3>
-            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>Experiencing panic? Aura triggers an interactive 5-4-3-2-1 breathing exercise using the visual Empathy Orb.</p>
+            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Find Your Calm</h3>
+            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>If panic sets in, just follow the glowing orb. Aura walks you through simple breathing exercises to help you feel grounded again.</p>
           </div>
           <div className="feature-card">
-            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Worry Postponement</h3>
-            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>Don't let anxiety hijack your study session. Aura safely files your anxieties away into a digital Worry Box.</p>
+            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Save It For Later</h3>
+            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>Don't let anxiety ruin your study flow. Vent your worries to Aura, and we'll keep them safe in a Worry Box until you're ready to deal with them.</p>
           </div>
         </div>
 
@@ -245,9 +245,9 @@ function AuraCompanion() {
         {showLoginModal && (
           <div className="modal-overlay" onClick={() => setShowLoginModal(false)}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
-              <h2>Login to Aura</h2>
+              <h2>Welcome to Aura</h2>
               <p style={{ margin: "15px 0", fontSize: "0.9rem", color: "rgba(255,255,255,0.6)" }}>
-                Enter your email to receive a secure Magic Link. No passwords required.
+                Enter your email to get a quick login link. No passwords to remember.
               </p>
               {magicLinkSent ? (
                 <p style={{ color: "var(--orb-calm)", fontWeight: "bold" }}>Magic link sent! Check your inbox.</p>
@@ -315,7 +315,7 @@ function AuraCompanion() {
         <div className="branding" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
           <img src="/logo.png" alt="Aura Logo" style={{ width: "60px", height: "60px", borderRadius: "50%", boxShadow: "0 0 20px rgba(168, 85, 247, 0.2)" }} />
           <h1>Aura</h1>
-          <p>Your Academic Resilience Coach</p>
+          <p>Your Safe Space for Exam Prep</p>
         </div>
 
         <div 
