@@ -12,6 +12,7 @@ function AuraCompanion() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const recognitionRef = useRef<any>(null);
   
   const searchParams = useSearchParams();
@@ -175,27 +176,62 @@ function AuraCompanion() {
     return (
       <>
         <div className="ambient-bg" />
-        <div className="ui-layer" style={{ justifyContent: "center" }}>
-          <div className="transcript-box">
-            <h2>Welcome to Aura</h2>
-            <p style={{ margin: "10px 0" }}>Enter your email to receive a frictionless login link.</p>
-            {magicLinkSent ? (
-              <p style={{ color: "var(--orb-calm)" }}>Magic link sent! Check your email.</p>
-            ) : (
-              <form onSubmit={requestMagicLink} style={{ pointerEvents: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>
-                <input 
-                  type="email" 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
-                  placeholder="student@example.com"
-                  required
-                  style={{ padding: "10px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.1)", color: "white" }}
-                />
-                <button type="submit" className="btn">Send Magic Link</button>
-              </form>
-            )}
+        
+        {/* LANDING PAGE */}
+        <div className="landing-hero">
+          <h1>Aura: Your Clinical AI Companion</h1>
+          <p style={{ fontSize: "1.2rem", lineHeight: "1.6", color: "rgba(255,255,255,0.8)" }}>
+            High-stakes exams like NEET, JEE, and UPSC demand more than just hard work—they demand immense psychological resilience.
+            Aura is a voice-first, generative AI wellness companion designed specifically for students facing burnout and stress.
+          </p>
+          <button className="btn" style={{ marginTop: "30px", fontSize: "1.2rem" }} onClick={() => setShowLoginModal(true)}>
+            Get Started Frictionlessly
+          </button>
+        </div>
+
+        <div className="features-grid">
+          <div className="feature-card">
+            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Cognitive Restructuring</h3>
+            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>Aura uses Socratic Questioning to help you overcome catastrophizing and self-doubt during exam prep.</p>
+          </div>
+          <div className="feature-card">
+            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Somatic Grounding</h3>
+            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>Experiencing panic? Aura triggers an interactive 5-4-3-2-1 breathing exercise using the visual Empathy Orb.</p>
+          </div>
+          <div className="feature-card">
+            <h3 style={{ color: "var(--orb-calm)", marginBottom: "10px" }}>Worry Postponement</h3>
+            <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}>Don't let anxiety hijack your study session. Aura safely files your anxieties away into a digital Worry Box.</p>
           </div>
         </div>
+
+        {/* LOGIN MODAL */}
+        {showLoginModal && (
+          <div className="modal-overlay" onClick={() => setShowLoginModal(false)}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
+              <h2>Login to Aura</h2>
+              <p style={{ margin: "15px 0", fontSize: "0.9rem", color: "rgba(255,255,255,0.6)" }}>
+                Enter your email to receive a secure Magic Link. No passwords required.
+              </p>
+              {magicLinkSent ? (
+                <p style={{ color: "var(--orb-calm)", fontWeight: "bold" }}>Magic link sent! Check your inbox.</p>
+              ) : (
+                <form onSubmit={requestMagicLink} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                  <input 
+                    type="email" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    placeholder="student@example.com"
+                    required
+                    style={{ padding: "12px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.1)", color: "white" }}
+                  />
+                  <button type="submit" className="btn" style={{ background: "rgba(99, 102, 241, 0.5)" }}>
+                    Send Magic Link
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </>
     );
   }
@@ -210,8 +246,15 @@ function AuraCompanion() {
         </div>
       )}
 
-      <div className="ui-layer">
-        <div className="header">
+      {/* Problem Statement Alignment: Target Exam UI */}
+      <div className="exam-target-banner" style={{ background: 'rgba(255,255,255,0.1)', padding: '8px 16px', borderRadius: '20px', marginBottom: '20px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span role="img" aria-label="target">🎯</span>
+        <strong>Target: NEET 2026</strong>
+        <span style={{ opacity: 0.8 }}>| 45 Days Left</span>
+      </div>
+
+      <main className="main-content">
+        <div className="branding">
           <h1>Aura</h1>
           <p>Your Academic Resilience Coach</p>
         </div>

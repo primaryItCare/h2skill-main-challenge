@@ -190,3 +190,64 @@ body {
   50% { transform: scale(1.4); } /* Inhale deeply */
   100% { transform: scale(0.85); } /* Exhale deeply */
 }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: rgba(20, 25, 40, 0.9);
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* Landing Page Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 40px auto;
+  max-width: 900px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.feature-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 20px;
+  border-radius: 16px;
+  text-align: left;
+  backdrop-filter: blur(5px);
+}
+
+.landing-hero {
+  text-align: center;
+  padding: 60px 20px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.landing-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #fff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
