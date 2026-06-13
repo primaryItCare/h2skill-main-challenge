@@ -43,14 +43,6 @@ async function getJsonBody(c: any) {
 
 // --- AUTHENTICATION ---
 app.post('/api/auth/login', async (c) => {
-  const ip = c.req.header('cf-connecting-ip') || 'unknown-ip';
-  const now = Date.now();
-  const lastRequest = rateLimitMap.get(ip);
-  if (lastRequest && now - lastRequest < 60000) { // 1 request per minute
-    return c.json({ error: 'Too many requests. Please wait a minute.' }, 429);
-  }
-  rateLimitMap.set(ip, now);
-
   const body = await getJsonBody(c);
   if (!body) return c.json({ error: 'Invalid JSON payload' }, 400);
 
