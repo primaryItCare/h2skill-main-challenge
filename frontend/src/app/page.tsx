@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 function AuraCompanion() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("Tap the orb and tell me what's on your mind...");
+  const [inputText, setInputText] = useState("");
   const [aiReply, setAiReply] = useState("");
   const [isBreathing, setIsBreathing] = useState(false);
   const [showWorryToast, setShowWorryToast] = useState(false);
@@ -117,6 +118,15 @@ function AuraCompanion() {
       utterance.pitch = 1;
       window.speechSynthesis.speak(utterance);
     }
+  };
+
+  const handleTextSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
+    const text = inputText;
+    setInputText("");
+    setTranscript(text);
+    await processInput(text);
   };
 
   /**
@@ -313,6 +323,19 @@ function AuraCompanion() {
               {isListening ? "Stop & Analyze" : "Tap to Speak"}
             </button>
           </div>
+          
+          <form onSubmit={handleTextSubmit} style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+            <input 
+              type="text" 
+              value={inputText} 
+              onChange={e => setInputText(e.target.value)} 
+              placeholder="Or type your thoughts here..." 
+              style={{ flex: 1, padding: "12px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.1)", color: "white" }}
+            />
+            <button type="submit" className="btn" style={{ background: "rgba(99, 102, 241, 0.5)", padding: "12px 20px" }}>
+              Send
+            </button>
+          </form>
         </div>
       </main>
     </>
