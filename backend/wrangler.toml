@@ -1,0 +1,13 @@
+name = "student-wellness-backend"
+compatibility_date = "2024-09-23"
+compatibility_flags = [ "nodejs_compat" ]
+main = "src/index.ts"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "wellness-db"
+database_id = "pending-id-create-later"
+
+[vars]
+# We will use the GEMINI_API_KEY environment variable. 
+# In production, this should be set via `wrangler secret put GEMINI_API_KEY`

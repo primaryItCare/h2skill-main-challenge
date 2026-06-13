@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS journals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    entry TEXT NOT NULL,
+    mood TEXT NOT NULL,
+    stress_level INTEGER NOT NULL,
+    triggers TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
