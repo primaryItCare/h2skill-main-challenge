@@ -60,6 +60,11 @@ function AuraCompanion() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        alert(errData.error || "Failed to send magic link. Please try again.");
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         setMagicLinkSent(true);
@@ -118,6 +123,10 @@ function AuraCompanion() {
       if (res.status === 401) {
         localStorage.removeItem("aura_token");
         setAuthToken(null);
+        return;
+      }
+      if (!res.ok) {
+        setAiReply("I'm sorry, I couldn't process that right now. Server returned an error.");
         return;
       }
 
