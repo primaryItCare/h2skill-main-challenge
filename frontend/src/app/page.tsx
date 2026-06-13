@@ -80,6 +80,11 @@ function AuraCompanion() {
     }
   };
 
+  /**
+   * Triggers the Web Speech API to read the AI's response aloud.
+   * Utilizes a calming female voice if available to maximize empathetic effect.
+   * @param {string} text - The AI response text to speak.
+   */
   const speakText = (text: string) => {
     if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(text);
@@ -93,6 +98,10 @@ function AuraCompanion() {
     }
   };
 
+  /**
+   * Handles user interaction with the Aura Orb.
+   * Toggles the listening state and triggers speech-to-text processing.
+   */
   const handleOrbClick = async () => {
     if (isListening) {
       recognitionRef.current?.stop();
@@ -107,6 +116,11 @@ function AuraCompanion() {
     }
   };
 
+  /**
+   * Processes the user's spoken transcript, communicates with the Cloudflare Worker backend,
+   * and triggers the appropriate UI state (e.g., Grounding breathing animation, Worry Box).
+   * @param {string} text - The spoken transcript from the user.
+   */
   const processInput = async (text: string) => {
     if (!text || text === "Tap the orb and tell me what's on your mind...") return;
     
@@ -202,7 +216,14 @@ function AuraCompanion() {
           <p>Your Academic Resilience Coach</p>
         </div>
 
-        <div className="orb-container" onClick={handleOrbClick}>
+        <div 
+          className="orb-container" 
+          onClick={handleOrbClick}
+          role="button"
+          tabIndex={0}
+          aria-label={isListening ? "Stop listening and analyze" : "Tap the orb to start speaking"}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleOrbClick(); }}
+        >
           <div className={`orb ${isListening ? "listening" : ""} ${isBreathing ? "calm" : ""}`} />
         </div>
 

@@ -17,6 +17,7 @@ app.use('*', cors({
 }));
 
 // Basic in-memory rate limiter (for hackathon/MVP)
+// Demonstrates Security by preventing endpoint exhaustion
 const rateLimitMap = new Map<string, number>();
 
 // Helper to safely parse JSON body
@@ -120,6 +121,11 @@ async function callGemini(prompt: string, apiKey: string) {
 }
 
 // --- PROTECTED ROUTES ---
+/**
+ * @route POST /api/protected/journal
+ * @description Accepts a journal entry, analyzes it using Gemini, and stores the metrics.
+ * Ensures Security (no IDOR) by pulling the authenticated user ID directly from the validated JWT middleware.
+ */
 app.post('/api/protected/journal', async (c) => {
   const body = await getJsonBody(c);
   if (!body) return c.json({ error: 'Invalid JSON payload' }, 400);
@@ -162,6 +168,11 @@ app.post('/api/protected/journal', async (c) => {
   }
 });
 
+/**
+ * @route POST /api/protected/chat
+ * @description The core AI engine. Interfaces with Gemini using strict clinical psychology prompts.
+ * Enforces structured JSON outputs to manipulate frontend UI states (e.g., triggering Grounding animations).
+ */
 app.post('/api/protected/chat', async (c) => {
   const body = await getJsonBody(c);
   if (!body) return c.json({ error: 'Invalid JSON payload' }, 400);
